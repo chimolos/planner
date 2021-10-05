@@ -5,13 +5,13 @@ import com.ucproject.users.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -55,8 +55,8 @@ public class TaskController {
     }
 
     @GetMapping("/task/{id}")
-    public Task getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id);
+    public Optional<Task> getTaskById(@PathVariable Long id) {
+        return taskRepo.findById(id);
     }
 
     @Transactional
@@ -68,5 +68,11 @@ public class TaskController {
         Users user = usersRepo.findByUsername(username);
 
         taskRepo.deleteByUserAndId(user, id);
+    }
+
+    @PostMapping("/task/{id}/share")
+    public String shareGoal(@PathVariable Long id, @RequestParam("classify")String classify, @RequestParam("name")String name) {
+        taskService.shareTask(id, classify, name);
+        return "Task shared successfully";
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -46,8 +47,8 @@ public class GoalController {
     }
 
     @GetMapping("/goal/{id}")
-    public Goals getGoalById(@PathVariable Long id) {
-        return goalService.getGoalById(id);
+    public Optional<Goals> getGoalById(@PathVariable Long id) {
+        return goalsRepo.findById(id);
     }
 
     @PutMapping("/goal/{id}/edit")
@@ -65,4 +66,11 @@ public class GoalController {
 
         goalsRepo.deleteByUserAndId(user, id);
     }
+
+    @PostMapping("/goal/{id}/share")
+    public String shareGoal(@PathVariable Long id, @RequestParam("classify")String classify, @RequestParam("name")String name) {
+        goalService.shareGoal(id, classify, name);
+        return "Goal shared successfully";
+    }
+
 }

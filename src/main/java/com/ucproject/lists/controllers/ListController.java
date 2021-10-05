@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -41,8 +42,8 @@ public class ListController {
     }
 
     @GetMapping("/list/{id}")
-    public Lists getListById(@PathVariable Long id) {
-        return listService.getListPerId(id);
+    public Optional<Lists> getListById(@PathVariable Long id) {
+        return listsRepo.findById(id);
     }
 
     @PutMapping("/list/{id}/edit")
@@ -59,5 +60,11 @@ public class ListController {
         Users user = usersRepo.findByUsername(username);
 
         listsRepo.deleteByUserAndId(user, id);
+    }
+
+    @PostMapping("/list/{id}/share")
+    public String shareGoal(@PathVariable Long id, @RequestParam("classify")String classify, @RequestParam("name")String name) {
+        listService.shareList(id, classify, name);
+        return "List shared successfully";
     }
 }

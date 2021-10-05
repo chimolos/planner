@@ -29,7 +29,7 @@ public class Goals extends BaseIdModel {
     @JsonIgnoreProperties("goal")
     private List<Steps> steps = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users user;
 
     @CreationTimestamp

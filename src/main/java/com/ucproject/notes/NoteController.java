@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -43,8 +44,8 @@ public class NoteController {
     }
 
     @GetMapping("/note/{id}")
-    public Note getNoteById(@PathVariable Long id) {
-        return noteService.getNoteById(id);
+    public Optional<Note> getNoteById(@PathVariable Long id) {
+        return noteRepo.findById(id);
     }
 
     @Transactional
@@ -55,5 +56,11 @@ public class NoteController {
         Users user = usersRepo.findByUsername(username);
 
         noteRepo.deleteByUserAndId(user, id);
+    }
+
+    @PostMapping("/note/{id}/share")
+    public String shareGoal(@PathVariable Long id, @RequestParam("classify")String classify, @RequestParam("name")String name) {
+        noteService.shareNote(id, classify, name);
+        return "Note shared successfully";
     }
 }
